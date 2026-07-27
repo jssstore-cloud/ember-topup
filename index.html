@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMBER — Top Up Diamond Free Fire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0D12;
+    --surface:#14171F;
+    --surface-2:#1B1F2A;
+    --line:#262B38;
+    --ember:#FF5A1F;
+    --ember-2:#FF8A3D;
+    --diamond:#4FD8FF;
+    --text:#F2F2F0;
+    --muted:#8A8F9C;
+    --good:#3DDC84;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Rajdhani', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit;}
+
+  /* ambient background */
+  .bg-glow{
+    position:fixed; inset:0; z-index:-1; overflow:hidden;
+  }
+  .bg-glow::before{
+    content:'';
+    position:absolute; top:-20%; left:50%; transform:translateX(-50%);
+    width:1200px; height:800px;
+    background:radial-gradient(ellipse at center, rgba(255,90,31,0.14) 0%, rgba(79,216,255,0.05) 45%, transparent 70%);
+    filter:blur(40px);
+  }
+
+  /* header */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,13,18,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    max-width:1180px; margin:0 auto; padding:16px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Rajdhani', sans-serif; font-weight:700; font-size:22px;
+    letter-spacing:0.06em;
+  }
+  .brand-mark{
+    width:30px; height:30px;
+    background:linear-gradient(135deg, var(--ember), var(--ember-2));
+    clip-path:polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    display:inline-block;
+  }
+  .nav-status{
+    display:flex; align-items:center; gap:8px;
+    font-size:12px; color:var(--muted); letter-spacing:0.03em;
+  }
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good);}
+
+  /* hero */
+  .hero{
+    max-width:1180px; margin:0 auto; padding:64px 24px 40px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;
+  }
+  .eyebrow{
+    color:var(--ember-2); font-size:13px; font-weight:600;
+    letter-spacing:0.14em; text-transform:uppercase; margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:''; width:16px; height:1px; background:var(--ember-2);}
+  .hero h1{
+    font-size:52px; line-height:1.02; font-weight:700; margin-bottom:18px;
+  }
+  .hero h1 span{color:var(--ember);}
+  .hero p{
+    color:var(--muted); font-size:16px; line-height:1.6; max-width:440px; margin-bottom:28px;
+  }
+  .hero-stats{display:flex; gap:28px;}
+  .hero-stats div{border-left:2px solid var(--line); padding-left:12px;}
+  .hero-stats .num{font-family:'JetBrains Mono', monospace; font-size:20px; font-weight:600; color:var(--diamond);}
+  .hero-stats .lbl{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;}
+
+  /* signature: diamond stack visual */
+  .stack-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:32px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stack-card::after{
+    content:''; position:absolute; top:-40%; right:-30%; width:220px; height:220px;
+    background:radial-gradient(circle, rgba(79,216,255,0.18), transparent 70%);
+  }
+  .stack-label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:18px;}
+  .stack-visual{
+    display:flex; align-items:flex-end; gap:10px; height:120px; margin-bottom:20px;
+  }
+  .shard{
+    flex:1; background:linear-gradient(180deg, var(--diamond), #1E7A99);
+    clip-path:polygon(50% 0%, 100% 30%, 82% 100%, 18% 100%, 0% 30%);
+    opacity:0.35; transition:all 0.35s ease;
+    box-shadow:0 0 0 rgba(79,216,255,0);
+  }
+  .shard.active{opacity:1; box-shadow:0 0 18px rgba(79,216,255,0.5);}
+  .stack-total{display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid var(--line); padding-top:16px;}
+  .stack-total .amt{font-family:'JetBrains Mono', monospace; font-size:28px; font-weight:600; color:var(--diamond);}
+  .stack-total .price{font-family:'JetBrains Mono', monospace; font-size:16px; color:var(--text);}
+
+  /* section titles */
+  .section{max-width:1180px; margin:0 auto; padding:32px 24px;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:20px;}
+  .section-head h2{font-size:26px; font-weight:700;}
+  .section-head .step{font-size:12px; color:var(--muted); letter-spacing:0.04em;}
+  .step b{color:var(--ember-2);}
+
+  /* account form */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px;
+  }
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  label{display:block; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;}
+  input[type=text]{
+    width:100%; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:8px; padding:13px 14px; color:var(--text); font-size:15px;
+    font-family:'JetBrains Mono', monospace;
+    transition:border-color 0.2s;
+  }
+  input[type=text]:focus{outline:none; border-color:var(--ember); box-shadow:0 0 0 3px rgba(255,90,31,0.15);}
+  input[type=text]::placeholder{color:#4A5062;}
+  .id-check{
+    margin-top:12px; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px;
+    min-height:18px;
+  }
+  .id-check.ok{color:var(--good);}
+
+  /* package grid */
+  .packages{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-top:20px;
+  }
+  .pkg{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:20px 16px; cursor:pointer; text-align:center; position:relative;
+    transition:border-color 0.2s, transform 0.15s;
+  }
+  .pkg:hover{transform:translateY(-2px); border-color:#3A4155;}
+  .pkg.selected{border-color:var(--ember); background:linear-gradient(180deg, rgba(255,90,31,0.08), var(--surface));}
+  .pkg .badge{
+    position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+    background:var(--ember); color:#fff; font-size:10px; font-weight:600;
+    padding:2px 10px; border-radius:20px; letter-spacing:0.04em; white-space:nowrap;
+  }
+  .pkg .icon{width:26px; height:26px; margin:6px auto 12px;
+    background:linear-gradient(135deg, var(--diamond), #1E7A99);
+    clip-path:polygon(50% 0%, 100% 30%, 82% 100%, 18% 100%, 0% 30%);
+  }
+  .pkg .dia{font-family:'JetBrains Mono', monospace; font-weight:600; font-size:18px;}
+  .pkg .bonus{font-size:11px; color:var(--ember-2); margin-top:2px; min-height:14px;}
+  .pkg .price{font-family:'JetBrains Mono', monospace; font-size:14px; color:var(--muted); margin-top:10px;}
+
+  /* payment */
+  .pay-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px;}
+  .pay{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:16px; text-align:center; cursor:pointer; font-size:13px; font-weight:600;
+    transition:border-color 0.2s;
+  }
+  .pay:hover{border-color:#3A4155;}
+  .pay.selected{border-color:var(--diamond); color:var(--diamond); background:rgba(79,216,255,0.06);}
+  .pay .p-icon{font-size:20px; display:block; margin-bottom:8px;}
+
+  /* summary bar */
+  .summary{
+    position:sticky; bottom:0; margin-top:36px;
+    background:var(--surface); border-top:1px solid var(--line);
+    padding:20px 24px; display:flex; align-items:center; justify-content:space-between;
+    border-radius:14px 14px 0 0; box-shadow:0 -8px 30px rgba(0,0,0,0.4);
+  }
+  .summary-left{display:flex; gap:24px; align-items:center;}
+  .summary-item .lbl{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;}
+  .summary-item .val{font-family:'JetBrains Mono', monospace; font-size:16px; font-weight:600;}
+  .summary-item .val.total{font-size:22px; color:var(--ember-2);}
+  .btn-pay{
+    background:linear-gradient(135deg, var(--ember), var(--ember-2));
+    color:#fff; border:none; padding:15px 32px; border-radius:10px;
+    font-family:'Rajdhani', sans-serif; font-weight:700; font-size:16px;
+    letter-spacing:0.04em; text-transform:uppercase; cursor:pointer;
+    transition:filter 0.2s, transform 0.15s;
+  }
+  .btn-pay:hover{filter:brightness(1.08); transform:translateY(-1px);}
+  .btn-pay:disabled{opacity:0.4; cursor:not-allowed; filter:none; transform:none;}
+
+  /* footer note */
+  .footnote{
+    max-width:1180px; margin:40px auto 60px; padding:0 24px;
+    color:var(--muted); font-size:12.5px; line-height:1.7;
+    border-top:1px solid var(--line); padding-top:24px;
+  }
+  .footnote b{color:var(--text);}
+
+  @media (max-width: 860px){
+    .hero{grid-template-columns:1fr; padding-top:40px;}
+    .hero h1{font-size:36px;}
+    .packages{grid-template-columns:repeat(2,1fr);}
+    .pay-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-2{grid-template-columns:1fr;}
+    .summary{flex-direction:column; gap:16px; align-items:stretch;}
+    .summary-left{justify-content:space-between;}
+    .btn-pay{width:100%;}
+  }
+
+  :focus-visible{outline:2px solid var(--diamond); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand"><span class="brand-mark"></span>EMBER</div>
+    <div class="nav-status"><span class="dot"></span>Terhubung ke server resmi</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">Top up resmi &middot; Proses instan</div>
+    <h1>Isi Diamond <span>Free Fire</span> tanpa drama.</h1>
+    <p>Masukkan ID akun, pilih jumlah Diamond, bayar — diamond masuk otomatis ke akun dalam hitungan detik lewat sistem resmi penyedia.</p>
+    <div class="hero-stats">
+      <div><div class="num">2–5 dtk</div><div class="lbl">Rata-rata proses</div></div>
+      <div><div class="num">24/7</div><div class="lbl">Layanan aktif</div></div>
+      <div><div class="num">100%</div><div class="lbl">Jalur resmi</div></div>
+    </div>
+  </div>
+
+  <div class="stack-card">
+    <div class="stack-label">Pratinjau pembelian</div>
+    <div class="stack-visual" id="stackVisual"></div>
+    <div class="stack-total">
+      <div><div class="stack-label" style="margin-bottom:4px;">Total diamond</div><div class="amt" id="stackAmt">0 💎</div></div>
+      <div class="price" id="stackPrice">Rp 0</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>1. Akun tujuan</h2>
+    <div class="step">Langkah <b>1</b> dari 3</div>
+  </div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <label for="uid">User ID</label>
+        <input type="text" id="uid" placeholder="Contoh: 123456789" inputmode="numeric">
+      </div>
+      <div>
+        <label for="zid">Zone ID (opsional)</label>
+        <input type="text" id="zid" placeholder="Contoh: 2001">
+      </div>
+    </div>
+    <div class="id-check" id="idCheck">Masukkan User ID untuk memverifikasi nama akun.</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>2. Pilih paket Diamond</h2>
+    <div class="step">Langkah <b>2</b> dari 3</div>
+  </div>
+  <div class="packages" id="packages"></div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>3. Metode pembayaran</h2>
+    <div class="step">Langkah <b>3</b> dari 3</div>
+  </div>
+  <div class="pay-grid" id="payGrid"></div>
+</section>
+
+<div class="summary">
+  <div class="summary-left">
+    <div class="summary-item"><div class="lbl">Diamond</div><div class="val" id="sumDia">— </div></div>
+    <div class="summary-item"><div class="lbl">Metode</div><div class="val" id="sumPay">—</div></div>
+    <div class="summary-item"><div class="lbl">Total bayar</div><div class="val total" id="sumTotal">Rp 0</div></div>
+  </div>
+  <button class="btn-pay" id="btnPay" disabled>Bayar sekarang</button>
+</div>
+
+<div class="footnote">
+  <b>Catatan:</b> Ini adalah tampilan antarmuka (UI) demo dan belum terhubung ke API pembayaran atau sistem resmi penyedia diamond. Untuk berjualan diamond secara sah, kamu perlu mendaftar sebagai reseller resmi ke penyedia seperti Codashop, UniPin, VCGamers, atau Garena secara langsung, lalu menyambungkan API mereka ke tampilan ini. Jangan pernah memasukkan password akun Free Fire di situs top-up mana pun — cukup User ID.
+</div>
+
+<script>
+  const packagesData = [
+    {dia:50,  bonus:'', price:8500},
+    {dia:100, bonus:'', price:15500},
+    {dia:210, bonus:'+10 Bonus', price:31500},
+    {dia:355, bonus:'+25 Bonus', price:52000, badge:'Populer'},
+    {dia:530, bonus:'+30 Bonus', price:76000},
+    {dia:1080,bonus:'+65 Bonus', price:148000, badge:'Hemat'},
+    {dia:2200,bonus:'+130 Bonus', price:295000},
+    {dia:5600,bonus:'+400 Bonus', price:730000},
+  ];
+
+  const payData = [
+    {name:'QRIS', icon:'⌗'},
+    {name:'E-Wallet', icon:'◈'},
+    {name:'Virtual Account', icon:'▤'},
+    {name:'Pulsa', icon:'✆'},
+  ];
+
+  const packagesEl = document.getElementById('packages');
+  const payGridEl = document.getElementById('payGrid');
+  let selectedPkg = null;
+  let selectedPay = null;
+
+  packagesData.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'pkg';
+    el.innerHTML = `
+      ${p.badge ? `<div class="badge">${p.badge}</div>` : ''}
+      <div class="icon"></div>
+      <div class="dia">${p.dia.toLocaleString('id-ID')} 💎</div>
+      <div class="bonus">${p.bonus}</div>
+      <div class="price">Rp ${p.price.toLocaleString('id-ID')}</div>
+    `;
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.pkg').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPkg = p;
+      updateStack(p);
+      updateSummary();
+    });
+    packagesEl.appendChild(el);
+  });
+
+  payData.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'pay';
+    el.innerHTML = `<span class="p-icon">${p.icon}</span>${p.name}`;
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.pay').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPay = p.name;
+      updateSummary();
+    });
+    payGridEl.appendChild(el);
+  });
+
+  // stack visual
+  const stackVisual = document.getElementById('stackVisual');
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.className = 'shard';
+    stackVisual.appendChild(s);
+  }
+  function updateStack(p){
+    const shards = document.querySelectorAll('.shard');
+    const activeCount = Math.max(1, Math.round((p.dia / 5600) * shards.length));
+    shards.forEach((s, i) => {
+      s.classList.toggle('active', i < activeCount);
+      s.style.height = (30 + (i % 5) * 15) + 'px';
+    });
+    document.getElementById('stackAmt').textContent = (p.dia).toLocaleString('id-ID') + ' 💎';
+    document.getElementById('stackPrice').textContent = 'Rp ' + p.price.toLocaleString('id-ID');
+  }
+
+  function updateSummary(){
+    document.getElementById('sumDia').textContent = selectedPkg ? selectedPkg.dia.toLocaleString('id-ID') + ' 💎' : '—';
+    document.getElementById('sumPay').textContent = selectedPay || '—';
+    document.getElementById('sumTotal').textContent = selectedPkg ? 'Rp ' + selectedPkg.price.toLocaleString('id-ID') : 'Rp 0';
+    const uid = document.getElementById('uid').value.trim();
+    document.getElementById('btnPay').disabled = !(selectedPkg && selectedPay && uid.length > 4);
+  }
+
+  document.getElementById('uid').addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    const check = document.getElementById('idCheck');
+    if (val.length > 4) {
+      check.textContent = '✓ Nama akun terdeteksi: Player_' + val.slice(-4);
+      check.classList.add('ok');
+    } else {
+      check.textContent = 'Masukkan User ID untuk memverifikasi nama akun.';
+      check.classList.remove('ok');
+    }
+    updateSummary();
+  });
+
+  // Ganti xxxxxxx di bawah ini dengan kode form dari akun Formspree kamu
+  const FORMSPREE_URL = 'https://formspree.io/f/xxxxxxx';
+
+  document.getElementById('btnPay').addEventListener('click', async () => {
+    const btn = document.getElementById('btnPay');
+    const data = {
+      user_id: document.getElementById('uid').value.trim(),
+      zone_id: document.getElementById('zid').value.trim(),
+      paket_diamond: selectedPkg ? selectedPkg.dia : null,
+      harga: selectedPkg ? selectedPkg.price : null,
+      metode_bayar: selectedPay,
+      waktu: new Date().toLocaleString('id-ID')
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'Mengirim...';
+
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        alert('Data pesanan tercatat. (Ini masih demo, belum ada pembayaran sungguhan yang diproses.)');
+      } else {
+        alert('Gagal mengirim data. Pastikan FORMSPREE_URL sudah diisi dengan benar.');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi. Coba lagi.');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Bayar sekarang';
+  });
+</script>
+
+</body>
+</html>
